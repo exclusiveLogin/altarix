@@ -11,8 +11,9 @@
 
     <link rel="icon" sizes="192x192" href="public/images/rn_logo.png">
     <!--Система сборки-->
-    <script src="public/vendor.js?v0.9.2" type="application/javascript"></script>
-    <script src="public/loader.js?v0.9.2" type="application/javascript"></script>
+    <script src="public/vendor.js?v0" type="application/javascript"></script>
+    <script src="public/loader.js?v0" type="application/javascript"></script>
+    <script src="js/ang.js" type="application/javascript"></script>
 
     <!--trends-->
     <!--script src="js/trend.js?v0.9.2" type="application/javascript"></script-->
@@ -38,7 +39,11 @@
     <div class="danger_field"></div>
     <div id="wrapper">
         <div id="container" class="container-fluid">
-            <div id="minview">{{2+2}}</div>
+            <div id="minview" class="rn_color" ng-controller="ctrl">
+                <div ng-repeat="city in listOfCityes">
+                    <cityitem data-index="{{$index}}">{{city}}</cityitem>
+                </div>
+            </div>
         </div>
     </div>
     <div id="footer">
