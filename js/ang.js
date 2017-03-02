@@ -1,20 +1,32 @@
 
-var app = angular.module("app",[]);
+var app = angular.module("app",["ngRoute"]);
 
-app.run(function (cityes) {
-   console.log("from run city list:",cityes.getList());
+//console.log("locationProvider UN:",$locationProvider);
+
+app.run(function (cityes,w_log) {
+    console.log("from run city list:",cityes.getList());
+    console.log("w_log:",w_log);
 });
-app.directive("cityitem",function (w_log) {
+app.config(["$routeProvider","$locationProvider",function ($routeProvider,$locationProvider) {
+    console.log("routeProvider:",$routeProvider);
+    console.log("locationProvider:",$locationProvider);
+    $routeProvider.when("/",{
+        templateUrl:"tmpl/citylist.html"
+    }).when("/weather/:city",{
+        templateUrl:"tmpl/weatherlist.html"
+    });
+}]);
+app.directive("cityitem",function (cityes,w_log,$location) {
     return{
         link:function (scope, element, attrs) {
             scope.log = w_log.getListFor(attrs.index);
-            console.log("log:",scope.log);
+            // console.log("log:",scope.log);
 
             //вешаем обработчик
             element.on("click",function (e) {
-                console.log("Element:",element);
-                console.log("Event:",e);
-                console.log("Attributes:",attrs);
+                console.log("$location:",$location);
+                $location.path("/weather/"+attrs.index);
+                scope.$apply();
             });
         },
         transclude:true,
@@ -22,12 +34,14 @@ app.directive("cityitem",function (w_log) {
         template:`<div class="cityitem col-md-3">
                         <span class="cityname" ng-transclude></span>
                         <div class="mydevider"></div>
-                        <div class="pacc">{{log[log.length-1].pacc}}</div>
+                        <div class="status"></div>
+                        <div class="mydevider"></div>
                         <div class="temp">{{log[log.length-1].temperature}}</div>
+                        <div class="pacc">{{log[log.length-1].pacc}}</div>
                     </div>`
     }
 });
-/*app.directive("cityitem",function (w_log) {
+app.directive("witem",function (w_log) {
     return{
         link:function (scope, element, attrs) {
             scope.log = w_log.getListFor(attrs.index);
@@ -43,10 +57,9 @@ app.directive("cityitem",function (w_log) {
                 $(element).find(".tempin").removeClass("transparent").val(val);
             });
         },
-        transclude:true,
         replace:true,
-        template:`<div class="cityitem col-md-3">
-                        <span class="cityname" ng-transclude></span>
+        template:`<div class="witem col-md-3">
+                        <div class="pacc">{{log[log.length-1].pacc}}</div>
                         <div class="mydevider"></div>
                         <div class="pacc">{{log[log.length-1].pacc}}</div>
                         <input type="text" placeholder="pacc" class="paccin transparent">
@@ -55,11 +68,29 @@ app.directive("cityitem",function (w_log) {
                         <button class="submitBtn button button-danger">Сохранить</button>
                     </div>`
     }
-});*/
-app.controller("ctrl",function ($scope,cityes,w_log) {
+});
+app.controller("logctrl",function ($scope,cityes,w_log,$routeParams) {
+    console.log("routeParams:",$routeParams);
     $scope.addPacc = false;
     $scope.addTemp = false;
     $scope.addPreDate = false;
+    $scope.listOfWeather = w_log.getListFor($routeParams.city);
+    console.log("Weather:",$scope.listOfWeather);
+    // let list = cityes.getList();
+    // console.log(list);
+    // console.log("log for Syzran",w_log.getListFor(1));
+    // $scope.addWeather = function(id){
+    //     if($scope.addPacc && $scope.addTemp && $scope.addPreDate){
+    //         let weather = {};
+    //         let t_date = $scope.
+    //         w_log.addWeather(id,weather);
+    //     }
+    // };
+    // $scope.submitWeather = function(id,weather,index){
+    //     w_log.updateWeather(id,weather,index);
+    // }
+});
+app.controller("ctrl",function ($scope,cityes,w_log) {
     $scope.listOfCityes = cityes.getList();
     console.log("from ctrl",$scope);
     let list = cityes.getList();

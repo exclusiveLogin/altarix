@@ -25,7 +25,7 @@
         <div class="logo col-lg-4 col-md-4 col-sm-4 hidden-xs hidden-sm"><p class="logo_title">Altarix</p><span> WEATHER CLIENT</span></div>
 		<div class="logo_m col-xs-12 visible-xs visible-sm text-center"></div>
         <div class="col-xs-12 visible-xs visible-sm text-center">Altarix - WEATHER CLIENT</div>
-        <div class="col-lg-4 col-md-4 col-sm-4 hidden-xs hidden-sm demo">Ограниченная демоверсия</div>
+        <div class="col-lg-4 col-md-4 col-sm-4 hidden-xs hidden-sm demo"></div>
         <div id="menu" class="col-lg-3 col-md-3 col-sm-3 text-right hidden-xs">
             <button class="btn btn-success btnlogin"><i class="fa fa-user-circle fa-2x"></i></button>
             <button class="btn btn-danger btnlogout"><i class="fa fa-user-circle fa-2x"></i></button>
@@ -39,11 +39,7 @@
     <div class="danger_field"></div>
     <div id="wrapper">
         <div id="container" class="container-fluid">
-            <div id="minview" class="rn_color" ng-controller="ctrl">
-                <div ng-repeat="city in listOfCityes">
-                    <cityitem data-index="{{$index}}">{{city}}</cityitem>
-                </div>
-            </div>
+            <div ng-view></div>
         </div>
     </div>
     <div id="footer">
