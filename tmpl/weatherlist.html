@@ -1,5 +1,7 @@
 <div id="minview" class="rn_color" ng-controller="logctrl">
+    <div class="cityname">Показана погода для {{currentCity}} <a href="#!/"> Домой</a></div>
     <div ng-repeat="item in listOfWeather">
-        <witem data-index="{{$index}}"></witem>
+        <witem data-index="{{$index}}" data-item="{{item}}"></witem>
     </div>
+    <wadd></wadd>
 </div>

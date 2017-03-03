@@ -672,3 +672,12 @@ a:hover{
     margin-top:-70px;
     /*transform: translateY(-70px);*/
 }
+.witem .editBlock{
+    display: none;
+}
+.addContainer{
+    transition: all 1s ease;
+}
+.fa-trash{
+    cursor: pointer;
+}
