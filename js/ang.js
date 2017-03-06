@@ -182,7 +182,6 @@ app.controller("logctrl",function ($scope,cityes,w_log,$routeParams,$http) {
     $scope.refreshList();
     $scope.removeWeather = function (index) {
         $http.delete("http://localhost:3001/weather",{data:{city:$routeParams.city,index:index}}).then(function (data) {
-            //console.log("delete:",data);
         });
         $scope.refreshList();
     };
