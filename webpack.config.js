@@ -1,4 +1,5 @@
 var webpack = require("webpack");
+var path = require("path");
 module.exports = {
     entry:{
         loader:"./js/loader.js",
@@ -8,6 +9,11 @@ module.exports = {
         path: __dirname + "/public/",
         filename: "[name].js",
         publicPath:"/altarix/public/"
+    },
+    resolve:{
+        alias:{
+            "jquery":path.resolve(__dirname+"/node_modules/jquery2")
+        }
     },
     module: {
         loaders: [

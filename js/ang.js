@@ -1,8 +1,50 @@
+var app = angular.module("app",["ngRoute","ngMockE2E"]);
 
-var app = angular.module("app",["ngRoute"]);
-
-app.run(function (cityes,w_log) {
-    console.log("RUN APP");
+app.run(function (cityes,w_log,$httpBackend,$rootScope) {
+    $rootScope.blocks="true";
+    $httpBackend.whenGET('http://localhost:3001/cityes').respond(function(method, url, data){
+        if(data){
+            data = JSON.parse(data);
+            if(data.city){
+                return[200,{
+                    city:cityes.getList()[data.city],
+                    log:w_log.getListFor(data.city)
+                }];
+            }else {
+                return[200,cityes.getList()];
+            }
+        }else {
+            return[200,cityes.getList()];
+        }
+    });
+    $httpBackend.whenDELETE('http://localhost:3001/weather').respond(function(method, url, data){
+        if(data){
+            data = JSON.parse(data);
+            if(data.city && data.index){
+                w_log.removeWeather(data.city,data.index);
+            }
+        }
+        return[200,"all ok"];
+    });
+    $httpBackend.whenPOST('http://localhost:3001/weather').respond(function(method, url, data){
+        if(data){
+            data = JSON.parse(data);
+            if(data.data.city && data.data.index && data.data.weather){
+                w_log.updateWeather(data.data.city,data.data.weather,data.data.index);
+            }
+        }
+        return[200,"all ok"];
+    });
+    $httpBackend.whenPUT('http://localhost:3001/weather').respond(function(method, url, data){
+        if(data){
+            data = JSON.parse(data);
+            if(data.data.city && data.data.weather){
+                w_log.addWeather(data.data.city,data.data.weather);
+            }
+        }
+        return[200,"all ok"];
+    });
+    $httpBackend.whenGET(/.*/).passThrough();
 });
 app.config(["$routeProvider","$locationProvider",function ($routeProvider,$locationProvider) {
     $routeProvider.when("/",{
@@ -11,11 +53,12 @@ app.config(["$routeProvider","$locationProvider",function ($routeProvider,$locat
         templateUrl:"tmpl/weatherlist.html"
     });
 }]);
-app.directive("cityitem",function (cityes,w_log,$location) {
+app.directive("cityitem",function (cityes,w_log,$location,$http) {
     return{
         link:function (scope, element, attrs) {
-            scope.log = w_log.getListFor(attrs.index);
-
+            $http.get("http://localhost:3001/cityes",{data:{city:attrs.index}}).then(function (data) {
+                scope.log = data.data.log;
+            });
             //вешаем обработчик
             element.on("click",function (e) {
                 $location.path("/weather/"+attrs.index);
@@ -29,17 +72,17 @@ app.directive("cityitem",function (cityes,w_log,$location) {
                         <div class="mydevider"></div>
                         <div class="status"></div>
                         <div class="mydevider"></div>
-                        <div class="temp">{{log[log.length-1].temperature}}</div>
-                        <div class="pacc">{{log[log.length-1].pacc}}</div>
+                        <div class="pacc"><i class="fa fa-tint"></i> {{log[log.length-1].pacc}}</div>
+                        <div class="temp"><i class="fa fa-thermometer"></i> {{log[log.length-1].temperature}}</div>
                     </div>`
     }
 });
 app.directive("witem",function (w_log,$routeParams) {
     return{
         link:function (scope, element, attrs) {
-            console.log("route:",$routeParams);
-            scope.log = w_log.getListFor($routeParams.city);
-            scope.dateBin = scope.log[attrs.index].date;
+            //scope.log = w_log.getListFor($routeParams.city);
+            scope.log = scope.listOfWeather;
+            scope.dateBin = new Date(scope.log[attrs.index].date);
             scope.dateString = scope.dateBin.toLocaleDateString();
             scope.toggleEdit = function(state){
                 if(state){
@@ -52,12 +95,15 @@ app.directive("witem",function (w_log,$routeParams) {
                     $(element).find(".submitBtn").hide(500);
                 }
             };
+            element.on("click",".fa-trash",function () {
+                scope.removeWeather(attrs.index);
+            });
             element.on("click",".viewBlock",function () {
                 scope.toggleEdit(true);
             });
             element.on("click",".submitBtn",function () {
                 scope.toggleEdit(false);
-                scope.updateSubmit($routeParams.city,scope.log[attrs.index],attrs.index);
+                scope.updateSubmit($routeParams.city,attrs.index,scope.log[attrs.index]);
             });
         },
         replace:true,
@@ -90,56 +136,116 @@ app.directive("wadd",function () {
                 $(element).find(".addWeatherLink").hide(500);
                 $(element).find(".addContainer").removeClass("transparentStatic");
             });
+            element.on("click",".addBtn",function () {
+                let t_predate = $(element).find(".preDate").val();
+                let t_pacc = $(element).find(".paccin").val();
+                let t_temp = $(element).find(".tempin").val();
+                scope.$parent.addPreDate = t_predate;
+                scope.$parent.addPacc = t_pacc;
+                scope.$parent.addTemp = t_temp;
+
+                scope.addSubmit();
+                $(element).find(".addWeatherLink").show(500);
+                $(element).find(".addContainer").addClass("transparentStatic");
+            });
+            $(".preDate").datepicker({
+                dateFormat: "yy.mm.dd"
+            });
         },
         replace:true,
         template:`<div class="witem col-md-3 text-center">
                         <i class="fa fa-plus fa-4x addWeatherLink"></i>
                         <div class="addContainer transparentStatic">
                                 <div class="time">Добавление данных погоды</div>
-                                <input type="text" class="paccin" ng-model="addPreDate">
+                                <input type="text" class="preDate" ng-model="addPreDate">
                                 <div class="mydevider"></div>
                                 <div class="pacc">Осадки</div>
                                 <input type="text" class="paccin" ng-model="addPacc">
                                 <div class="temp">Температура</div>
                                 <input type="text" class="tempin" ng-model="addTemp">
                                 <div class="mydevider"></div>
-                                <button class="submitBtn btn btn-primary" ng-click="addSubmit()">Добавить данные</button>               
+                                <button class="addBtn btn btn-warning">Добавить данные</button>
                         </div>     
                     </div>`
     }
 });
-app.controller("logctrl",function ($scope,cityes,w_log,$routeParams) {
+app.controller("logctrl",function ($scope,cityes,w_log,$routeParams,$http) {
     $scope.addPacc = 0;
     $scope.addTemp = 0;
-    $scope.addPreDate = new Date().toLocaleDateString();
-    $scope.listOfWeather = w_log.getListFor($routeParams.city);
-    $scope.currentCity = cityes.getList()[$routeParams.city];
-    console.log("START LOGCTRL");
+    $scope.addPreDate = "Выберите дату";
     $scope.refreshList = function () {
-        $scope.listOfWeather = w_log.getListFor($routeParams.city);
-        $scope.currentCity = cityes.getList()[$routeParams.city];
+        $http.get("http://localhost:3001/cityes",{data:{city:$routeParams.city}}).then(function (data) {
+            $scope.currentCity = data.data.city;
+            $scope.listOfWeather = data.data.log;
+        });
     };
-
+    $scope.refreshList();
+    $scope.removeWeather = function (index) {
+        $http.delete("http://localhost:3001/weather",{data:{city:$routeParams.city,index:index}}).then(function (data) {
+            //console.log("delete:",data);
+        });
+        $scope.refreshList();
+    };
     $scope.addSubmit = function () {
         $scope.addPacc = Number($scope.addPacc);
         $scope.addTemp = Number($scope.addTemp);
+        $scope.addPreDate = new Date($scope.addPreDate);
 
         if(isNaN($scope.addTemp) || isNaN($scope.addPacc)){
-            console.log("Вы ввели не корректный тип данных");
+            alert("Вы ввели не корректный тип данных");
         }else {
             if($scope.addTemp < -100 || $scope.addTemp > 100 || $scope.addPacc < 0 || $scope.addPacc > 100){
-                console.log("Значение введенных данных выходит за рамки разумного");
+                alert("Значение введенных данных выходит за рамки разумного");
             }else {
-                console.log("all data is ok");
+                //Отправляем запрос
+                let weather = {
+                    date:$scope.addPreDate,
+                    pacc:$scope.addPacc,
+                    temperature:$scope.addTemp
+                };
+                // w_log.addWeather($routeParams.city,weather);
+                $http.put("http://localhost:3001/weather",{data:{city:$routeParams.city,weather:weather}}).then(function (data) {
+                    $scope.refreshList();
+                });
             }
         }
     };
     $scope.updateSubmit = function (city,index,weather) {
-        w_log.updateWeather(city,weather,index);
+        let upPacc = Number(weather.pacc);
+        let upTemp = Number(weather.temperature);
+        let upPreDate = new Date(weather.date);
+
+        if(isNaN(upTemp) || isNaN(upPacc)){
+            alert("Вы ввели не корректный тип данных");
+        }else {
+            if(upTemp < -100 || upTemp > 100 || upPacc < 0 || upPacc > 100){
+                alert("Значение введенных данных выходит за рамки разумного");
+            }else {
+                //Отправляем запрос
+                let weather_r = {
+                    date:upPreDate,
+                    pacc:upPacc,
+                    temperature:upTemp
+                };
+                $http.post("http://localhost:3001/weather",{data:{city:city,index:index,weather:weather_r}}).then(function (data) {
+                });
+            }
+        }
     };
 });
-app.controller("ctrl",function ($scope,cityes) {
-    $scope.listOfCityes = cityes.getList();
+app.controller("ctrl",function ($scope,$http) {
+    $http.get("http://localhost:3001/cityes").then(function (data) {
+        $scope.listOfCityes = data.data;
+    });
+});
+app.controller("menuctrl",function ($scope,$rootScope) {
+    $scope.tableToggle = function(state){
+        if(state){
+            $rootScope.blocks="true";
+        }else {
+            $rootScope.blocks="false";
+        }
+    }
 });
 app.factory("cityes",function () {
     citylist = ["Samara","Syzran","Rameno","Togliatti","Kinel","Usolie","Shiryaevo"];
@@ -273,14 +379,15 @@ app.factory("w_log",function () {
     ];
     var checkDublicates = function(id,weather) {
         if(weather) {
-            let cont_date = weather.date;
+            let cont_date = new Date(weather.date);
             let y = cont_date.getFullYear();
             let d = cont_date.getDate();
             let m = cont_date.getMonth();
             let ret_index = _.findIndex(log[id],function (elem) {
-                let t_y = elem.date.getFullYear();
-                let t_d = elem.date.getDate();
-                let t_m = elem.date.getMonth();
+                let t_date = new Date(elem.date);
+                let t_y = t_date.getFullYear();
+                let t_d = t_date.getDate();
+                let t_m = t_date.getMonth();
                 if((y == t_y) && (m == t_m) && (d == t_d)){
                     return true;
                 }
@@ -296,15 +403,18 @@ app.factory("w_log",function () {
             let dub = checkDublicates(id,weather);
             if(dub == -1){
                 //Добавляем
-                console.log("Добавляем");
+                log[id].push(weather);
             }else {
                 //Заменяем
-                console.log("Заменяем");
+                log[id][dub] = weather;
             }
+
         },
         updateWeather:function (city,weather,index) {
             log[city][index] = weather;
-            console.log("DEBUG LOG:",log);
+        },
+        removeWeather:function (city,index) {
+            log[city].splice(index,1);
         }
     }
 });
