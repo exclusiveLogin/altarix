@@ -678,6 +678,6 @@ a:hover{
 .addContainer{
     transition: all 1s ease;
 }
-.fa-trash{
+.fa-trash, .fa-pencil, .cityitem{
     cursor: pointer;
 }
