@@ -229,7 +229,7 @@ app.directive("wadd",function () {
             });
         },
         replace:true,
-        template:`<div class="wadd col-md-3 col-lg-2 col-sm-4 col-xs-6 text-center">
+        template:`<div class="wadd col-md-4 col-lg-3 col-sm-4 col-xs-6 text-center">
                         <div class="innerWadd">
                             <i class="fa fa-plus fa-4x addWeatherLink"></i>
                             <div class="addContainer">
@@ -327,7 +327,10 @@ app.controller("menuctrl",function ($scope,$rootScope) {
     }
 });
 app.factory("cityes",function () {
-    citylist = ["Samara","Syzran","Rameno","Togliatti","Kinel","Usolie","Shiryaevo"];
+    citylist = ["Самара","Сызрань","Рамено","Тольятти","Кинель","Усолье","Ширяево",
+"Октябрьск", "Похвистнево", "Жигулевск", "Чапаевск","Новокуйбышевск",
+    "Отрадный", "Нефтегорск", "Борское","Волжский","Сергиевск","Суходол","Приволжье",
+    "Роджественно","Ягодное","Богатое"];
     return{
         getList:function () {
             return citylist;
@@ -340,7 +343,194 @@ app.factory("w_log",function () {
             {
                 date:new Date("21 jan 2017"),
                 pacc:0.3,
-                temperature:2.3
+                temperature:11
+            },
+            {
+                date:new Date("22 jan 2017"),
+                pacc:1.3,
+                temperature:22
+            },
+            {
+                date:new Date("23 jan 2017"),
+                pacc:0,
+                temperature:32
+            }
+        ],
+        [
+            {
+                date:new Date("21 jan 2017"),
+                pacc:0.3,
+                temperature:11
+            },
+            {
+                date:new Date("22 jan 2017"),
+                pacc:1.3,
+                temperature:22
+            },
+            {
+                date:new Date("23 jan 2017"),
+                pacc:0,
+                temperature:32
+            }
+        ],
+        [
+            {
+                date:new Date("21 jan 2017"),
+                pacc:0.3,
+                temperature:11
+            },
+            {
+                date:new Date("22 jan 2017"),
+                pacc:1.3,
+                temperature:22
+            },
+            {
+                date:new Date("23 jan 2017"),
+                pacc:0,
+                temperature:32
+            }
+        ],
+        [
+            {
+                date:new Date("21 jan 2017"),
+                pacc:0.3,
+                temperature:11
+            },
+            {
+                date:new Date("22 jan 2017"),
+                pacc:1.3,
+                temperature:22
+            },
+            {
+                date:new Date("23 jan 2017"),
+                pacc:0,
+                temperature:32
+            }
+        ],
+        [
+            {
+                date:new Date("21 jan 2017"),
+                pacc:0.3,
+                temperature:11
+            },
+            {
+                date:new Date("22 jan 2017"),
+                pacc:1.3,
+                temperature:22
+            },
+            {
+                date:new Date("23 jan 2017"),
+                pacc:0,
+                temperature:32
+            }
+        ],
+        [
+            {
+                date:new Date("21 jan 2017"),
+                pacc:0.3,
+                temperature:11
+            },
+            {
+                date:new Date("22 jan 2017"),
+                pacc:1.3,
+                temperature:22
+            },
+            {
+                date:new Date("23 jan 2017"),
+                pacc:0,
+                temperature:32
+            }
+        ],
+        [
+            {
+                date:new Date("21 jan 2017"),
+                pacc:0.3,
+                temperature:11
+            },
+            {
+                date:new Date("22 jan 2017"),
+                pacc:1.3,
+                temperature:22
+            },
+            {
+                date:new Date("23 jan 2017"),
+                pacc:0,
+                temperature:32
+            }
+        ],
+        [
+            {
+                date:new Date("21 jan 2017"),
+                pacc:0.3,
+                temperature:11
+            },
+            {
+                date:new Date("22 jan 2017"),
+                pacc:1.3,
+                temperature:22
+            },
+            {
+                date:new Date("23 jan 2017"),
+                pacc:0,
+                temperature:32
+            }
+        ],
+        [
+            {
+                date:new Date("21 jan 2017"),
+                pacc:0.3,
+                temperature:11
+            },
+            {
+                date:new Date("22 jan 2017"),
+                pacc:1.3,
+                temperature:22
+            },
+            {
+                date:new Date("23 jan 2017"),
+                pacc:0,
+                temperature:32
+            }
+        ],
+        [
+            {
+                date:new Date("21 jan 2017"),
+                pacc:0.3,
+                temperature:11
+            },
+            {
+                date:new Date("22 jan 2017"),
+                pacc:1.3,
+                temperature:22
+            },
+            {
+                date:new Date("23 jan 2017"),
+                pacc:0,
+                temperature:32
+            }
+        ],
+        [
+            {
+                date:new Date("21 jan 2017"),
+                pacc:0.3,
+                temperature:11
+            },
+            {
+                date:new Date("22 jan 2017"),
+                pacc:1.3,
+                temperature:22
+            },
+            {
+                date:new Date("23 jan 2017"),
+                pacc:0,
+                temperature:32
+            }
+        ],
+        [
+            {
+                date:new Date("21 jan 2017"),
+                pacc:0.3,
+                temperature:33
             },
             {
                 date:new Date("22 jan 2017"),
@@ -357,7 +547,7 @@ app.factory("w_log",function () {
             {
                 date:new Date("21 jan 2017"),
                 pacc:0.3,
-                temperature:2.3
+                temperature:23
             },
             {
                 date:new Date("22 jan 2017"),
@@ -374,7 +564,7 @@ app.factory("w_log",function () {
             {
                 date:new Date("21 jan 2017"),
                 pacc:0.3,
-                temperature:2.3
+                temperature:11
             },
             {
                 date:new Date("22 jan 2017"),
@@ -384,7 +574,7 @@ app.factory("w_log",function () {
             {
                 date:new Date("23 jan 2017"),
                 pacc:0,
-                temperature:4
+                temperature:22
             }
         ],
         [
@@ -401,7 +591,7 @@ app.factory("w_log",function () {
             {
                 date:new Date("23 jan 2017"),
                 pacc:0,
-                temperature:4
+                temperature:14
             }
         ],
         [
@@ -418,7 +608,7 @@ app.factory("w_log",function () {
             {
                 date:new Date("23 jan 2017"),
                 pacc:0,
-                temperature:4
+                temperature:32
             }
         ],
         [
@@ -435,7 +625,75 @@ app.factory("w_log",function () {
             {
                 date:new Date("23 jan 2017"),
                 pacc:0,
+                temperature:32
+            }
+        ],
+        [
+            {
+                date:new Date("21 jan 2017"),
+                pacc:0.3,
+                temperature:21
+            },
+            {
+                date:new Date("22 jan 2017"),
+                pacc:1.3,
+                temperature:-1
+            },
+            {
+                date:new Date("23 jan 2017"),
+                pacc:0,
                 temperature:4
+            }
+        ],
+        [
+            {
+                date:new Date("21 jan 2017"),
+                pacc:0.3,
+                temperature:23
+            },
+            {
+                date:new Date("22 jan 2017"),
+                pacc:1.3,
+                temperature:-1
+            },
+            {
+                date:new Date("23 jan 2017"),
+                pacc:0,
+                temperature:4
+            }
+        ],
+        [
+            {
+                date:new Date("21 jan 2017"),
+                pacc:80,
+                temperature:2.3
+            },
+            {
+                date:new Date("22 jan 2017"),
+                pacc:0,
+                temperature:-1
+            },
+            {
+                date:new Date("23 jan 2017"),
+                pacc:0,
+                temperature:27
+            }
+        ],
+        [
+            {
+                date:new Date("21 jan 2017"),
+                pacc:15,
+                temperature:20
+            },
+            {
+                date:new Date("22 jan 2017"),
+                pacc:1.3,
+                temperature:-1
+            },
+            {
+                date:new Date("23 jan 2017"),
+                pacc:10,
+                temperature:26
             }
         ],
         [
@@ -451,8 +709,8 @@ app.factory("w_log",function () {
             },
             {
                 date:new Date("23 jan 2017"),
-                pacc:0,
-                temperature:6
+                pacc:80,
+                temperature:15
             }
         ]
     ];

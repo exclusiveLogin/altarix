@@ -27,18 +27,15 @@
     z-index: 150;
     position: relative;
 }
-html{
-    height: 100%;
-}
 body{
     color: white;
     font-size: 150%;
     margin: 0;
-    height: 100%;
+    min-height: 1000px;
     /*background-color: #777;*/
-    margin-bottom: 30px;
+    margin-bottom: 70px;
     background: #4c4c4c; /* Old browsers */
-    background: linear-gradient(to bottom, #5abbff 0%,#00325d 10%,#bbdaff 70%,#000102 100%);
+    background: linear-gradient(to bottom, #5abbff 0%,#00325d 10%,#bbdaff 70%,#5abbff 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4c4c4c', endColorstr='#6d6d6d',GradientType=0 ); /* IE6-9 */
 }
 #container{
@@ -109,8 +106,6 @@ a{
     color: #FFD100;
 }
 a:hover{
-    font-weight: bold;
-    text-transform: uppercase;
     color: #bfd255;
 }
 #footer{
@@ -178,6 +173,8 @@ a:hover{
     float: right;
 }
 .innerWitem{
+    overflow: hidden;
+    text-overflow: ellipsis;
     margin-bottom: 10px;
     font-family: "Arial Black";
     font-size: 150%;
