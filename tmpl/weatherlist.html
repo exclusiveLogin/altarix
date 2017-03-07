@@ -2,10 +2,12 @@
     <div ng-switch on="blocks">
         <div ng-switch-when="true">
             <div class="cityname">Показана погода для {{currentCity}} <a href="#!/"> Перейти назад</a></div>
-            <div ng-repeat="item in listOfWeather">
-                <witem data-index="{{$index}}"></witem>
+            <div class="row">
+                <div ng-repeat="item in listOfWeather">
+                    <witem data-index="{{$index}}"></witem>
+                </div>
+                <wadd></wadd>
             </div>
-            <wadd></wadd>
         </div>
         <div ng-switch-when="false">
             <div> Нет стиля для таблицы</div>

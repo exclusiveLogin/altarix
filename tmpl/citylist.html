@@ -1,8 +1,10 @@
 <div id="minview" class="rn_color" ng-controller="ctrl">
     <div ng-switch on="blocks">
         <div ng-switch-when="true">
-            <div ng-repeat="city in listOfCityes">
-                <cityitem data-index="{{$index}}">{{city}}</cityitem>
+            <div class="row">
+                <div ng-repeat="city in listOfCityes">
+                    <cityitem data-index="{{$index}}">{{city}}</cityitem>
+                </div>
             </div>
         </div>
         <div ng-switch-when="false">

@@ -56,24 +56,65 @@ app.config(["$routeProvider","$locationProvider",function ($routeProvider,$locat
 app.directive("cityitem",function (cityes,w_log,$location,$http) {
     return{
         link:function (scope, element, attrs) {
+            function remClass() {
+                $(element).find(".innerWitem").removeClass("cold aver hot dri liq");
+                $(element).find(".wicon").removeClass("sun cloud snow rain snowrain hot");
+            }
+            function refreshStyle() {
+                if(Number(scope.log[scope.log.length-1].temperature) >= 25){
+                    remClass();
+                    $(element).find(".innerWitem").addClass("hot");
+                    $(element).find(".wicon").addClass("hot");
+                }
+                if(Number(scope.log[scope.log.length-1].temperature) <= 0){
+                    remClass();
+                    $(element).find(".innerWitem").addClass("cold");
+                    $(element).find(".wicon").addClass("snow");
+                }
+                if(Number(scope.log[scope.log.length-1].temperature) >= 0 && Number(scope.log[scope.log.length-1].temperature) <= 10) {
+                    remClass();
+                    $(element).find(".innerWitem").addClass("aver");
+                    $(element).find(".wicon").addClass("cloud");
+                }
+                if(Number(scope.log[scope.log.length-1].temperature) >= 10 && Number(scope.log[scope.log.length-1].temperature) <= 25) {
+                    remClass();
+                    $(element).find(".innerWitem").addClass("aver");
+                    $(element).find(".wicon").addClass("sun");
+                }
+                if(Number(scope.log[scope.log.length-1].pacc) >= 70){
+                    remClass();
+                    $(element).find(".innerWitem").addClass("liq");
+                    $(element).find(".wicon").addClass("rain");
+                }
+                if(Number(scope.log[scope.log.length-1].pacc) >= 70 && Number(scope.log[scope.log.length-1].temperature) <= 0){
+                    remClass();
+                    $(element).find(".innerWitem").addClass("liq");
+                    $(element).find(".wicon").addClass("snowrain");
+                }
+            }
+
             $http.get("http://localhost:3001/cityes",{data:{city:attrs.index}}).then(function (data) {
                 scope.log = data.data.log;
+                refreshStyle();
             });
             //вешаем обработчик
             element.on("click",function (e) {
                 $location.path("/weather/"+attrs.index);
                 scope.$apply();
             });
+
         },
         transclude:true,
         replace:true,
-        template:`<div class="cityitem col-md-3">
-                        <span class="cityname" ng-transclude></span>
-                        <div class="mydevider"></div>
-                        <div class="status"></div>
-                        <div class="mydevider"></div>
-                        <div class="pacc"><i class="fa fa-tint"></i> {{log[log.length-1].pacc}}</div>
-                        <div class="temp"><i class="fa fa-thermometer"></i> {{log[log.length-1].temperature}}</div>
+        template:`<div class="cityitem col-md-3 col-lg-2 col-sm-4 col-xs-6 text-center">
+                        <div class="innerWitem">
+                            <span class="cityname" ng-transclude></span>
+                            <div class="mydevider"></div>
+                            <div class="wicon"></div>
+                            <div class="mydevider"></div>
+                            <div class="pacc"><i class="fa fa-tint"></i> {{log[log.length-1].pacc}}</div>
+                            <div class="temp"><i class="fa fa-thermometer"></i> {{log[log.length-1].temperature}}</div>
+                        </div>                        
                     </div>`
     }
 });
