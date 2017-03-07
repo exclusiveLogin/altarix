@@ -202,7 +202,6 @@ app.controller("logctrl",function ($scope,cityes,w_log,$routeParams,$http) {
                     pacc:$scope.addPacc,
                     temperature:$scope.addTemp
                 };
-                // w_log.addWeather($routeParams.city,weather);
                 $http.put("http://localhost:3001/weather",{data:{city:$routeParams.city,weather:weather}}).then(function (data) {
                     $scope.refreshList();
                 });
