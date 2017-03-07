@@ -2,7 +2,6 @@ var app = angular.module("app",["ngRoute","ngMockE2E"]);
 
 app.run(function (cityes,w_log,$httpBackend,$rootScope) {
     $rootScope.blocks="true";
-    console.log("RUN APP",$rootScope);
     $httpBackend.whenGET('http://localhost:3001/cityes').respond(function(method, url, data){
         if(data){
             data = JSON.parse(data);
@@ -59,7 +58,6 @@ app.directive("cityitem",function (cityes,w_log,$location,$http) {
         link:function (scope, element, attrs) {
             $http.get("http://localhost:3001/cityes",{data:{city:attrs.index}}).then(function (data) {
                 scope.log = data.data.log;
-                console.log("cityitem:",data);
             });
             //вешаем обработчик
             element.on("click",function (e) {
@@ -84,6 +82,43 @@ app.directive("witem",function (w_log,$routeParams) {
         link:function (scope, element, attrs) {
             //scope.log = w_log.getListFor($routeParams.city);
             scope.log = scope.listOfWeather;
+            function remClass() {
+                $(element).find(".innerWitem").removeClass("cold aver hot dri liq");
+                $(element).find(".wicon").removeClass("sun cloud snow rain snowrain hot");
+            }
+            function refreshStyle() {
+                if(Number(scope.log[attrs.index].temperature) >= 25){
+                    remClass();
+                    $(element).find(".innerWitem").addClass("hot");
+                    $(element).find(".wicon").addClass("hot");
+                }
+                if(Number(scope.log[attrs.index].temperature) <= 0){
+                    remClass();
+                    $(element).find(".innerWitem").addClass("cold");
+                    $(element).find(".wicon").addClass("snow");
+                }
+                if(Number(scope.log[attrs.index].temperature) >= 0 && Number(scope.log[attrs.index].temperature) <= 10) {
+                    remClass();
+                    $(element).find(".innerWitem").addClass("aver");
+                    $(element).find(".wicon").addClass("cloud");
+                }
+                if(Number(scope.log[attrs.index].temperature) >= 10 && Number(scope.log[attrs.index].temperature) <= 25) {
+                    remClass();
+                    $(element).find(".innerWitem").addClass("aver");
+                    $(element).find(".wicon").addClass("sun");
+                }
+                if(Number(scope.log[attrs.index].pacc) >= 70){
+                    remClass();
+                    $(element).find(".innerWitem").addClass("liq");
+                    $(element).find(".wicon").addClass("rain");
+                }
+                if(Number(scope.log[attrs.index].pacc) >= 70 && Number(scope.log[attrs.index].temperature) <= 0){
+                    remClass();
+                    $(element).find(".innerWitem").addClass("liq");
+                    $(element).find(".wicon").addClass("snowrain");
+                }
+            }
+            refreshStyle();
             scope.dateBin = new Date(scope.log[attrs.index].date);
             scope.dateString = scope.dateBin.toLocaleDateString();
             scope.toggleEdit = function(state){
@@ -106,67 +141,77 @@ app.directive("witem",function (w_log,$routeParams) {
             element.on("click",".submitBtn",function () {
                 scope.toggleEdit(false);
                 scope.updateSubmit($routeParams.city,attrs.index,scope.log[attrs.index]);
+                refreshStyle();
             });
         },
         replace:true,
-        template:`<div class="witem col-md-3 text-center">
-                        <span class="time">{{dateString}}</span><span class="label label-danger"><i class="fa fa-trash"></i></span>
-                        <div class="mydevider"></div>
-                        <div class="row viewBlock">
-                            <span class="pacc"><i class="fa fa-tint"></i> {{log[$index].pacc}} %<i class="fa fa-pencil"></i></span>
-                        </div>
-                        <div class="editBlock">
-                            <input type="text" class="paccin" ng-model="log[$index].pacc">
-                        </div>
-                        <div class="row viewBlock">
-                            <span class="temp"><i class="fa fa-thermometer"></i> {{log[$index].temperature}} &deg;C<i class="fa fa-pencil"></i></span>
-                        </div>
-                        <div class="editBlock">
-                            <input type="text" class="tempin" ng-model="log[$index].temperature">
-                        </div>
-                        <div class="mydevider"></div>
-                        <div class="editBlock">
-                            <button class="submitBtn btn btn-primary">Сохранить</button>
+        template:`<div class="witem col-md-3 col-lg-2 col-sm-4 col-xs-6 text-center">
+                        <div class="innerWitem">
+                            <div class="time">{{dateString}}<i class="label label-danger"><i class="fa fa-trash"></i></i></div>
+                            <div class="wicon sun"></div>
+                            <div class="row viewBlock">
+                                <div class="pacc"><i class="fa fa-tint left"></i> {{log[$index].pacc}} %<i class="fa fa-pencil right"></i></div>
+                            </div>
+                            <div class="editBlock">
+                                <input type="text" class="paccin" ng-model="log[$index].pacc">
+                            </div>
+                            <div class="row viewBlock">
+                                <div class="temp"><i class="fa fa-thermometer"></i> {{log[$index].temperature}} &deg;C<i class="fa fa-pencil"></i></div>
+                            </div>
+                            <div class="editBlock">
+                                <input type="text" class="tempin" ng-model="log[$index].temperature">
+                            </div>
+                            <div class="editBlock">
+                                <button class="submitBtn btn btn-primary">Сохранить</button>
+                            </div>
                         </div>
                     </div>`
     }
 });
 app.directive("wadd",function () {
     return{
-        link:function (scope, element, attrs) {
+        controller:"logctrl",
+        link:function (scope, element, attrs, ctrl) {
+            $(element).find(".addContainer").hide();
+            console.log("ctrl:",ctrl);
             element.on("click",".addWeatherLink",function () {
                 $(element).find(".addWeatherLink").hide(500);
-                $(element).find(".addContainer").removeClass("transparentStatic");
+                $(element).find(".addContainer").show(500);
             });
             element.on("click",".addBtn",function () {
+                scope.addSubmit();
                 $(element).find(".addWeatherLink").show(500);
-                $(element).find(".addContainer").addClass("transparentStatic");
+                $(element).find(".addContainer").hide(500);
             });
             $(".preDate").datepicker({
-                dateFormat: "yy/mm/dd"
+                dateFormat: "yy.mm.dd"
             });
         },
         replace:true,
-        template:`<div class="witem col-md-3 text-center">
-                        <i class="fa fa-plus fa-4x addWeatherLink"></i>
-                        <div class="addContainer transparentStatic">
-                                <div class="time">Добавление данных погоды</div>
-                                <input type="text" class="preDate" ng-model="addPreDate">
-                                <div class="mydevider"></div>
-                                <div class="pacc">Осадки</div>
-                                <input type="text" class="paccin" ng-model="addPacc">
-                                <div class="temp">Температура</div>
-                                <input type="text" class="tempin" ng-model="addTemp">
-                                <div class="mydevider"></div>
-                                <button class="addBtn btn btn-warning" ng-click="addSubmit()">Добавить данные</button>               
-                        </div>     
+        template:`<div class="wadd col-md-3 col-lg-2 col-sm-4 col-xs-6 text-center">
+                        <div class="innerWadd">
+                            <i class="fa fa-plus fa-4x addWeatherLink"></i>
+                            <div class="addContainer">
+                                    <div class="time">Добавление данных погоды</div>
+                                    <input type="text" class="preDate" ng-model="addPreDate" >
+                                    <div class="mydevider"></div>
+                                    <div class="pacc">Осадки</div>
+                                    <input type="text" class="paccin" ng-model="addPacc" dirpacc="addPacc">
+                                    <div class="temp">Температура</div>
+                                    <input type="text" class="tempin" ng-model="addTemp" dirtemp="addTemp">
+                                    <div class="mydevider"></div>
+                                    <button class="addBtn btn btn-warning">Добавить данные</button>
+                            </div>  
+                        </div>
                     </div>`
     }
 });
 app.controller("logctrl",function ($scope,cityes,w_log,$routeParams,$http) {
     $scope.addPacc = 0;
     $scope.addTemp = 0;
-    $scope.addPreDate = new Date().toDateString();
+    let option={
+        weekday:"narrow", "year": "numeric"};
+    $scope.addPreDate = new Date();
     $scope.refreshList = function () {
         $http.get("http://localhost:3001/cityes",{data:{city:$routeParams.city}}).then(function (data) {
             $scope.currentCity = data.data.city;
@@ -197,7 +242,6 @@ app.controller("logctrl",function ($scope,cityes,w_log,$routeParams,$http) {
                     pacc:$scope.addPacc,
                     temperature:$scope.addTemp
                 };
-                // w_log.addWeather($routeParams.city,weather);
                 $http.put("http://localhost:3001/weather",{data:{city:$routeParams.city,weather:weather}}).then(function (data) {
                     $scope.refreshList();
                 });
@@ -233,16 +277,12 @@ app.controller("ctrl",function ($scope,$http) {
     });
 });
 app.controller("menuctrl",function ($scope,$rootScope) {
-    $scope.test = function () {
-        console.log("Menu CTRL");
-    }
     $scope.tableToggle = function(state){
         if(state){
             $rootScope.blocks="true";
         }else {
             $rootScope.blocks="false";
         }
-        console.log("Root:",$rootScope);
     }
 });
 app.factory("cityes",function () {
@@ -402,11 +442,9 @@ app.factory("w_log",function () {
             if(dub == -1){
                 //Добавляем
                 log[id].push(weather);
-                console.log("add log:",log[id],"dub:",dub);
             }else {
                 //Заменяем
                 log[id][dub] = weather;
-                console.log("replace log:",log[id],"dub:",dub);
             }
 
         },
