@@ -1,0 +1,30 @@
+<div class="witem col-md-12 col-lg-12 col-sm-12 col-xs-12 text-center">
+    <table width="100%" class="citytable rn_color">
+        <tr>
+            <td>{{dateString}}<i class="label label-danger"><i class="fa fa-trash"></i></i></td>
+            <td class="wicon"></td>
+            <td class="pacc">
+                <div class="row viewBlock">
+                    <div class="pacc"><i class="fa fa-tint left"></i> {{log[$index].pacc}} %<i class="fa fa-pencil right"></i></div>
+                </div>
+                <div class="editBlock">
+                    <input type="text" class="paccin" ng-model="log[$index].pacc">
+                </div>
+            </td>
+            <td class="temp">
+                <div class="row viewBlock">
+                    <div class="temp"><i class="fa fa-thermometer"></i> {{log[$index].temperature}} &deg;C<i class="fa fa-pencil"></i></div>
+                </div>
+                <div class="editBlock">
+                    <input type="text" class="tempin" ng-model="log[$index].temperature">
+                </div>
+
+            </td>
+            <td>
+                <div class="editBlock">
+                    <button class="submitBtn btn btn-primary">Сохранить</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>

@@ -200,6 +200,9 @@ a:hover{
     background: linear-gradient(to bottom, rgba(158,158,158,1) 0%, rgba(153,153,153,1) 50%, rgba(145,145,145,1) 51%, rgba(179,179,179,1) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#9e9e9e', endColorstr='#b3b3b3', GradientType=0 );
 }
+.wadd{
+
+}
 input{
     width: 70%;
     background: transparent;
@@ -258,6 +261,25 @@ input{
     width: 100%;
     border-radius: 20px;
 }
+td.wicon{
+    height: 100px;
+    width: 25%;
+    border-radius: 20px;
+}
+td.cityname{
+    width: 25%;
+}
+td.pacc{
+    width: 25%;
+}
+td.temp{
+    width: 25%;
+}
+.wicon_t{
+    height: 100px;
+    width: 200px;
+    border-radius: 20px;
+}
 .wicon.sun{
     background: url("sun.png");
     background-size: contain;
@@ -293,4 +315,10 @@ input{
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
+}
+.citytable{
+    font-size: 150%;
+    text-align: center;
+    font-weight: bold;
+    color: #FFD100;
 }

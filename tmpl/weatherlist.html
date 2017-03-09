@@ -10,7 +10,13 @@
             </div>
         </div>
         <div ng-switch-when="false">
-            <div> Нет стиля для таблицы</div>
+            <div class="cityname">Показана погода для {{currentCity}} <a href="#!/"> Перейти назад</a></div>
+            <div class="row">
+                <div ng-repeat="item in listOfWeather">
+                    <witem astable="1" data-index="{{$index}}"></witem>
+                </div>
+                <wadd></wadd>
+            </div>
         </div>
     </div>
 
